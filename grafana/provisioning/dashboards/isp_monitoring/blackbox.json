@@ -926,7 +926,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Blackbox Exporter (HTTP prober)",
+  "title": "HTTP Request Response Time",
   "uid": "NEzutrbMk",
   "version": 1,
   "weekStart": ""
