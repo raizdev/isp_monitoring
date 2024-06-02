@@ -1,0 +1,126 @@
+version: "3.9"
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  influxdb_data:
+
+services:
+  influxdb:
+    container_name: kpn_influxdb
+    image: "influxdb:1.8"
+    restart: unless-stopped
+    environment:
+      INFLUXDB_DATA_ENGINE: tsm1
+      INFLUXDB_DB: ${INFLUX_DB_DATABASE}
+      INFLUXDB_REPORTING_DISABLED: false
+      INFLUXDB_USER: ${INFLUX_DB_USER}
+      INFLUXDB_USER_PASSWORD: ${INFLUX_DB_PASSWORD}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - influxdb_data:/var/lib/influxdb
+    ports:
+      - 8086:8086
+
+  speedflux:
+    container_name: kpn_speedflux
+    image: raizdev/speedflux
+    environment:
+      INFLUX_DB_ADDRESS: ${LOCAL_IP_ADDRESS}
+      INFLUX_DB_PORT: ${INFLUX_DB_PORT}
+      INFLUX_DB_USER: ${INFLUX_DB_USER}
+      INFLUX_DB_PASSWORD: ${INFLUX_DB_PASSWORD}
+      INFLUX_DB_DATABASE: ${INFLUX_DB_DATABASE}
+      INFLUX_DB_TAGS: "*"
+      SPEEDTEST_INTERVAL: ${SPEEDTEST_INTERVAL}
+      PING_INTERVAL: ${PING_INTERVAL}
+      PING_TARGETS: ${PING_TARGETS}
+      LOG_TYPE: info
+      NAMESPACE: None
+    depends_on:
+      - influxdb
+
+  telegraf:
+    image: docker.io/telegraf:latest
+    container_name: kpn_telegraf
+    ports:
+      - 9283:9283
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.45.3
+    container_name: kpn_prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=1y'
+    restart: unless-stopped
+    networks:
+      - default
+    labels:
+      org.label-schema.group: "monitoring"
+
+  grafana:
+    image: grafana/grafana:10.3.1
+    container_name: kpn_grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=flant-statusmap-panel,frser-sqlite-datasource
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/isp_monitoring/mikrotik.json
+    restart: unless-stopped
+    ports:
+    - protocol: tcp
+      published: 3000
+      target: 3000
+    networks:
+      - default
+    labels:
+      org.label-schema.group: "monitoring"
+    depends_on:
+      - telegraf
+      - blackbox
+      - mktxp
+      - prometheus
+
+  mktxp:
+    image: ghcr.io/akpw/mktxp:gha-7614306238
+    container_name: mikrotik_mktxp
+    volumes:
+      - './mktxp/:/home/mktxp/mktxp/'
+    networks:
+      - default
+    restart: unless-stopped
+
+  blackbox:
+    image: quay.io/prometheus/blackbox-exporter:latest
+    container_name: kpn_blackbox_exporter
+    command: --config.file=/config/blackbox.yml
+    volumes:
+      - ./blackbox/blackbox.yml:/config/blackbox.yml
+    networks:
+      - default
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - default
+    restart: unless-stopped

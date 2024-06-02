@@ -1,0 +1,11 @@
+modules:
+  icmp_ttl5:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      ttl: 10
+  http_2xx:        # <== This is the new section for HTTP
+    prober: http
+    timeout: 10s   # <== This depends on what you want to do
+    http:
+      preferred_ip_protocol: "ip4"
