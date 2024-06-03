@@ -19,8 +19,6 @@ read -p "Do you use a microtik as a router and do you want to use this dashboard
 
 [ ! -z "$new_ip_address" ] && ip_address=$new_ip_address || ip_address=$default_ip_address
 
-echo "Updating .env local_ip to $ip_address and mikrotik_ip to $mikrotik_ipaddress"
-
 sed -i "s/local_ip/$ip_address/g" ./prometheus/prometheus.yml
 sed -i "s/local_ip/$ip_address/g" ./.env
 
