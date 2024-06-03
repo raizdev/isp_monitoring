@@ -71,6 +71,6 @@ scrape_configs:
   - job_name: "ispmonitor"
     scrape_interval: 15s
     static_configs:
-      - targets: ["10.0.0.229:9283"] # RPi telegraf Agent
+      - targets: ["local_ip:9283"] # RPi telegraf Agent
 
 
