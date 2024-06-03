@@ -24,12 +24,22 @@ echo "Updating .env local_ip to $ip_address and mikrotik_ip to $mikrotik_ipaddre
 sed -i "s/local_ip/$ip_address/g" ./prometheus/prometheus.yml
 sed -i "s/local_ip/$ip_address/g" ./.env
 
-[ -z "$mikrotik_ipaddress" ] || sed -i "s/mikrotik_ip/$mikrotik_ipaddress/g" ./.env 
-[ -z "$mikrotik_ipaddress" ] || sed -i "s/ping/mikrotik/g" ./.env 
+if [ ! -z "$mikrotik_ipaddress" ]
+then
+  sed -i "s/mikrotik_ip/$mikrotik_ipaddress/g" ./.env 
+  sed -i "s/ping/mikrotik/g" ./.env 
 
-[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '95,103d' ./docker-compose.yml
-[ ! -z "$mikrotik_ipaddress" ] || rm -rf ./grafana/provisioning/dashboards/isp_monitoring/mikrotik.json
-[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
+  sed -i "s/mktxp_host/$mikrotik_ipaddress/g" ./mktxp/mktxp.conf 
+
+  read -p "Mikrotik API user: " mikrotik_username  
+  sed -i "s/mktxp_user/$mikrotik_username/g" ./mktxp/mktxp.conf 
+  read -p "Mikrotik API password: " mikrotik_password
+  sed -i "s/mktxp_user_password/$mikrotik_password/g" ./mktxp/mktxp.conf 
+else
+  sed -i.bak -e '95,103d' ./docker-compose.yml
+  rm -rf ./grafana/provisioning/dashboards/isp_monitoring/mikrotik.json
+  sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
+fi
 
 echo 'Writing files done...'
 
