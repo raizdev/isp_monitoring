@@ -57,8 +57,6 @@ elif  [[ $arch == arm* ]] || [[ $arch = aarch64 ]]; then
     architecture="raizdev\/speedflux"
 fi
 
-echo $architecture
-
 sed -i "s/architecture_image/$architecture/g" ./.env
 
 sleep 2
