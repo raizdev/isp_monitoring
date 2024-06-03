@@ -91,7 +91,6 @@ services:
     depends_on:
       - telegraf
       - blackbox
-      - mktxp
       - prometheus
 
   mktxp:
