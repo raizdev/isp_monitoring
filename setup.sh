@@ -27,7 +27,7 @@ sed -i "s/local_ip/$ip_address/g" ./.env
 [ -z "$mikrotik_ipaddress" ] || sed -i "s/mikrotik_ip/$mikrotik_ipaddress/g" ./.env 
 [ -z "$mikrotik_ipaddress" ] || sed -i "s/ping/mikrotik/g" ./.env 
 
-[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '94,102d' ./docker-compose.yml
+[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '95,103d' ./docker-compose.yml
 [ ! -z "$mikrotik_ipaddress" ] || rm -rf ./grafana/provisioning/dashboards/isp_monitoring/mikrotik.json
 [ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
 
