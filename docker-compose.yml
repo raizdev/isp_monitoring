@@ -24,7 +24,7 @@ services:
 
   speedflux:
     container_name: kpn_speedflux
-    image: raizdev/speedflux
+    image: ${IMAGE}
     environment:
       INFLUX_DB_ADDRESS: ${LOCAL_IP_ADDRESS}
       INFLUX_DB_PORT: ${INFLUX_DB_PORT}
