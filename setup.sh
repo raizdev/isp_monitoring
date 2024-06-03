@@ -25,7 +25,7 @@ sed -i "s/local_ip/$ip_address/g" ./prometheus/prometheus.yml
 sed -i "s/local_ip/$ip_address/g" ./.env
 
 [ -z "$mikrotik_ipaddress" ] || sed -i "s/mikrotik_ip/$mikrotik_ipaddress/g" ./.env 
-[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '96,104d' ./docker-compose.yml
+[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '94,102d' ./docker-compose.yml
 [ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
 
 echo 'Writing files done...'
