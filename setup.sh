@@ -15,27 +15,29 @@ sed -i "s/local_ip/$ip_address/g" ./prometheus/prometheus.yml
 sed -i "s/local_ip/$ip_address/g" ./.env
 
 [ -z "$mikrotik_ipaddress" ] || sed -i "s/mikrotik_ip/$mikrotik_ipaddress/g" ./.env 
-[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '97,104d' ./docker-compose.yml
+[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '97,105d' ./docker-compose.yml
 [ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
 
 echo 'Writing files done...'
 
 sleep 1
 
-echo "Setting architecture in docker-compose to `uname -i`"
+echo "Setting architecture in .env to `uname -i`"
 
 architecture=""
 
 arch=$(uname -i)
 if [[ $arch == x86_64* ]]; then
-    architecture="sethwv/speedflux"
+    architecture="sethwv\/speedflux"
 elif [[ $arch == i*86 ]]; then
-    architecture="sethwv/speedflux"
+    architecture="sethwv\/speedflux"
 elif  [[ $arch == arm* ]] || [[ $arch = aarch64 ]]; then
-    architecture="raizdev/speedflux"
+    architecture="raizdev\/speedflux"
 fi
 
-sed -i "s/architecture/$architecture/g" ./docker-compose.yml
+echo $architecture
+
+sed -i "s/architecture_image/$architecture/g" ./.env
 
 sleep 3
 
