@@ -55,42 +55,25 @@ if [ -x "$(command -v docker)" ]; then
     sudo docker compose up -d
 else
     echo 'Installing docker...'
-    #debug mode
-    set -x  # Enable debug mode
-    # Update package list
-    sudo apt update
 
-    # Install dependencies
-    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+    # Add Docker's official GPG key:
+    sudo apt-get update
+    sudo apt-get install ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-    # Add Docker GPG key
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
-    # Add Docker repository
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-
-    # Update package list again
-    sudo apt update
-
-    # Install Docker
-    sudo apt install -y docker-ce
-
-    # Start and enable Docker service
-    sudo systemctl start docker
-    sudo systemctl enable docker
-
-    # Add your user to the docker group (optional, to run Docker without sudo)
-    sudo usermod -aG docker $USER
-
-    # Install Docker Compose (optional)
-    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-
-    set +x  # Disable debug mode
-
-    echo 'Docker installation done..'
-
-    sleep 2
+    # Add the repository to Apt sources:
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      
+    sudo apt-get update
+    
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
     sudo docker compose up -d
 fi
+
+echo "Installation done"
