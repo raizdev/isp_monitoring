@@ -1,8 +1,19 @@
-# Install 
-Setup will ask a number of questions to complete the installation process. After this is done, the docker container is installed
+# Installation
+Setup will ask a number of questions to complete the installation process.
 
 installation can be started by running the command:
 ````bash ./setup.sh````
+
+After following instructions docker container will be installed.
+
+# Mikrotik Dashboard
+If you are planning to enable the mikrotik stack in grafana don't forget to create a user with password.
+If this is not done, the API will not be able to read anything and the dashboard in Grafana will not work.
+
+````
+/user group add name=mktxp_group policy=api,read
+/user add name=mktxp_user group=mktxp_group password=mktxp_user_password
+````
 
 # Import Speedflux on Grafana
 * Create new dashboard under ISP Monitoring folder
