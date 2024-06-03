@@ -75,5 +75,3 @@ else
 
     sudo docker compose up -d
 fi
-
-echo "Installation done"
