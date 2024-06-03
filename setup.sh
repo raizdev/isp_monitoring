@@ -5,21 +5,39 @@ echo  "Local Device IP Address: $default_ip_address"
 
 read -p "Is this correct? (Y/n)?: " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || read -p "Enter Local Device IP Address : " new_ip_address
 
+read -p "Do you use a microtik as a router and do you want to use this dashboard (Y/n)?: " confirm && [[ $confirm == [nN] || $confirm == [nN][eE][sS] ]] || read -p "Enter Mikrotik Device IP Address : " mikrotik_ipaddress
+
 [ ! -z "$new_ip_address" ] && ip_address=$new_ip_address || ip_address=$default_ip_address
 
-read -p "Do you use a microtik as a router and do you want to use this dashboard (Y/n)?: " confirm && [[ $confirm == [nN] || $confirm == [nN][eE][sS] ]] || read -p "Enter Mikrotik Device IP Address : " mikrotik_ip
+echo "Updating .env local_ip to $ip_address and mikrotik_ip to $mikrotik_ipaddress"
 
 sed -i "s/local_ip/$ip_address/g" ./prometheus/prometheus.yml
 sed -i "s/local_ip/$ip_address/g" ./.env
 
-[ -z "$mikrotik_ip" ] && sed -i "s/mikrotik_ip/$mikrotik_ip/g" ./.env 
-
-[ ! -z "$mikrotik_ip" ] || sed -i.bak -e '97,104d' ./docker-compose.yml
-[ ! -z "$mikrotik_ip" ] || sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
+[ -z "$mikrotik_ipaddress" ] || sed -i "s/mikrotik_ip/$mikrotik_ipaddress/g" ./.env 
+[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '97,104d' ./docker-compose.yml
+[ ! -z "$mikrotik_ipaddress" ] || sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
 
 echo 'Writing files done...'
 
-sleep 5
+sleep 1
+
+echo "Setting architecture in docker-compose to `uname -i`"
+
+architecture=""
+
+arch=$(uname -i)
+if [[ $arch == x86_64* ]]; then
+    architecture="sethwv/speedflux"
+elif [[ $arch == i*86 ]]; then
+    architecture="sethwv/speedflux"
+elif  [[ $arch == arm* ]] || [[ $arch = aarch64 ]]; then
+    architecture="raizdev/speedflux"
+fi
+
+sed -i "s/architecture/$architecture/g" ./docker-compose.yml
+
+sleep 3
 
 echo 'Installing docker...'
 
