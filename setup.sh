@@ -44,7 +44,7 @@ echo 'Writing files done...'
 
 sleep 1
 
-echo "Setting architecture in .env to `uname -i`"
+echo "Processing installer with `uname -i` as architecture"
 
 architecture=""
 
