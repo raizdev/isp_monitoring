@@ -39,47 +39,48 @@ echo $architecture
 
 sed -i "s/architecture_image/$architecture/g" ./.env
 
-sleep 3
-
-echo 'Installing docker...'
-
 sleep 2
 
-#debug mode
-set -x  # Enable debug mode
-# Update package list
-sudo apt update
+if [ -x "$(command -v docker)" ]; then
+    sudo docker compose up -d
+else
+    echo 'Installing docker...'
+    #debug mode
+    set -x  # Enable debug mode
+    # Update package list
+    sudo apt update
 
-# Install dependencies
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+    # Install dependencies
+    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
 
-# Add Docker GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    # Add Docker GPG key
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-# Add Docker repository
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    # Add Docker repository
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-# Update package list again
-sudo apt update
+    # Update package list again
+    sudo apt update
 
-# Install Docker
-sudo apt install -y docker-ce
+    # Install Docker
+    sudo apt install -y docker-ce
 
-# Start and enable Docker service
-sudo systemctl start docker
-sudo systemctl enable docker
+    # Start and enable Docker service
+    sudo systemctl start docker
+    sudo systemctl enable docker
 
-# Add your user to the docker group (optional, to run Docker without sudo)
-sudo usermod -aG docker $USER
+    # Add your user to the docker group (optional, to run Docker without sudo)
+    sudo usermod -aG docker $USER
 
-# Install Docker Compose (optional)
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+    # Install Docker Compose (optional)
+    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
 
-set +x  # Disable debug mode
+    set +x  # Disable debug mode
 
-echo 'Docker installation done..'
+    echo 'Docker installation done..'
 
-sleep 2
+    sleep 2
 
-sudo docker compose up -d
+    sudo docker compose up -d
+fi
