@@ -76,7 +76,7 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_INSTALL_PLUGINS=flant-statusmap-panel,frser-sqlite-datasource
-      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/isp_monitoring/mikrotik.json
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/isp_monitoring/${GRAFANA_DEFAULT_DASHBOARD}.json
     restart: unless-stopped
     ports:
     - protocol: tcp
