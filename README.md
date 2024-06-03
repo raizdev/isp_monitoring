@@ -1,3 +1,6 @@
+Monitor your home connection in Grafana with Prometheus, InfluxDB and Telegraf.
+Mikrotik is not required to use this stack, installer will give you a choice
+
 # Installation
 Setup will ask a number of questions to complete the installation process.
 
