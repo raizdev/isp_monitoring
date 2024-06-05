@@ -1,14 +1,4 @@
 #!/bin/bash
-if ! [ -x "$(command -v git)" ]; then
-  echo 'Error: git is not installed. First install git with the following command: sudo apt install git' >&2
-  exit 1
-fi
-
-if ! grep -Fxq "mktp" ./docker-compose.yml
-then
-    git stash
-fi
-
 default_ip_address=$(hostname -I | awk '{print $1}')
 
 echo  "Local Device IP Address: $default_ip_address" 
@@ -43,23 +33,6 @@ fi
 echo 'Writing files done...'
 
 sleep 1
-
-echo "Processing installer with `uname -i` as architecture"
-
-architecture=""
-
-arch=$(uname -i)
-if [[ $arch == x86_64* ]]; then
-    architecture="sethwv\/speedflux"
-elif [[ $arch == i*86 ]]; then
-    architecture="sethwv\/speedflux"
-elif  [[ $arch == arm* ]] || [[ $arch = aarch64 ]]; then
-    architecture="raizdev\/speedflux"
-fi
-
-sed -i "s/architecture_image/$architecture/g" ./.env
-
-sleep 2
 
 if [ -x "$(command -v docker)" ]; then
     sudo docker compose up -d
