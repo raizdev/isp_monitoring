@@ -58,7 +58,7 @@ read -p "Do you use a microtik as a router and do you want to use this dashboard
 
 selections=(
 "KPN Barendrecht"
-"KPN Amsterdam"
+"KPN Amstelveen"
 "Auto"
 )
 
