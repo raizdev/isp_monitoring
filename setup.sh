@@ -43,7 +43,7 @@ fi
 . .env
 if [ ! "$LOCAL_IP_ADDRESS" = "local_ip" ]
 then
-  read -p "No default configuration found. Are you sure to start over (Y/n)? " confirm && [[ $confirm == [nN] || $confirm == [nN][eE][sS] ]] || git stash
+  read -p "No default configuration found. Are you sure to start over (Y/n)? " confirm && [[ $confirm == [nN] ||  $confirm == [nN][eE][sS] ]] && exit 1 || git stash
 fi
 
 default_ip_address=$(hostname -I | awk '{print $1}')
