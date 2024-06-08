@@ -36,6 +36,7 @@ services:
       PING_TARGETS: ${PING_TARGETS}
       LOG_TYPE: info
       NAMESPACE: None
+    restart: unless-stopped
     depends_on:
       - influxdb
 
@@ -72,8 +73,7 @@ services:
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
     environment:
-      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_INSTALL_PLUGINS=flant-statusmap-panel,frser-sqlite-datasource
@@ -107,18 +107,6 @@ services:
     command: --config.file=/config/blackbox.yml
     volumes:
       - ./blackbox/blackbox.yml:/config/blackbox.yml
-    networks:
-      - default
-    restart: unless-stopped
-
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - 80:80
-      - 443:443
     networks:
       - default
     restart: unless-stopped
