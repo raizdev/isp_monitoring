@@ -18,10 +18,6 @@ If this is not done, the API will not be able to read anything and the dashboard
 /user add name=mktxp_user group=mktxp_group password=mktxp_user_password
 ````
 
-# Import Speedflux on Grafana
-* Create new dashboard under ISP Monitoring folder
-* Import JSON ID ````13053```` and select influxdb as datasource
-
 # Environment variables
 
 | Tag Name 	| Description 	|
