@@ -1,31 +1,16 @@
-# my global config
 global:
   scrape_interval:     120s # By default, scrape targets every 15 seconds.
   evaluation_interval: 120s # By default, scrape targets every 15 seconds.
-  # scrape_timeout is set to the global default (10s).
 
-  # Attach these labels to any time series or alerts when communicating with
-  # external systems (federation, remote storage, Alertmanager).
   external_labels:
       monitor: 'mikrotik-monitoring'
 
-# Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
-  # - "alert.rules"
-  # - "first.rules"
-  # - "second.rules"
 
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'mikrotik'
 
-    # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 15s
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
 
     static_configs:
          - targets:
@@ -38,9 +23,10 @@ scrape_configs:
       module: [icmp_ttl5]  # use ICMP as the ping protocol
     static_configs:
       - targets:
-        - 1.1.1.1
-        - 8.8.8.8
-        - 9.9.9.9
+        - 8.8.8.8       #GOOGLE DNS
+        - 1.1.1.1       #CLOUDFLARE DNS
+        - 195.121.1.34  #KPN DNS1
+        - 195.121.1.66  #KPN DNS2
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -56,10 +42,11 @@ scrape_configs:
       module: [http_2xx]  # use HTTP as the protocol
     static_configs:
       - targets:
-        - https://steampowered.com
         - https://github.com
         - https://nu.nl
-        - https://discord.com
+        - https://kpn.com
+        - https://google.nl
+        - https://netflix.com
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -72,5 +59,3 @@ scrape_configs:
     scrape_interval: 15s
     static_configs:
       - targets: ["local_ip:9283"] # RPi telegraf Agent
-
-
