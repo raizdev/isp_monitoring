@@ -52,8 +52,3 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: blackbox:9115  # The blackbox exporter's real hostname:port.
-
-  - job_name: "ispmonitor"
-    scrape_interval: 15s
-    static_configs:
-      - targets: ["local_ip:9283"] # RPi telegraf Agent
