@@ -88,9 +88,8 @@ then
   read -p "Mikrotik API password: " mikrotik_password
   sed -i "s/mktxp_user_password/$mikrotik_password/g" ./mktxp/mktxp.conf
 else
-  sed -i.bak -e '95,103d' ./docker-compose.yml
+  sed -i.bak -e '86,93d' ./docker-compose.yml
   rm -rf ./grafana/provisioning/dashboards/isp_monitoring/mikrotik.json
-  sed -i.bak -e '22,33d' ./prometheus/prometheus.yml
   rm -rf ./mktxp
 fi
 
