@@ -89,6 +89,7 @@ then
   sed -i "s/mktxp_user_password/$mikrotik_password/g" ./mktxp/mktxp.conf
 else
   sed -i.bak -e '86,93d' ./docker-compose.yml
+  sed -i.bak -e '11,16d' ./prometheus/prometheus.yml
   rm -rf ./grafana/provisioning/dashboards/isp_monitoring/mikrotik.json
   rm -rf ./mktxp
 fi
