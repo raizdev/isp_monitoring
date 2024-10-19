@@ -61,7 +61,7 @@ services:
     image: grafana/grafana:10.3.1
     container_name: kpn_grafana
     volumes:
-      - grafana_data:/var/lib/grafana
+      - grafana_data:/var/lib/grafanahttps://github.com/raizdev/isp_monitoring/blob/main/docker-compose.yml
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
     environment:
@@ -84,7 +84,7 @@ services:
       - prometheus
 
   mktxp:
-    image: ghcr.io/akpw/mktxp:gha-7614306238
+    image: ghcr.io/akpw/mktxp:gha-10485178964
     container_name: mikrotik_mktxp
     volumes:
       - './mktxp/:/home/mktxp/mktxp/'
