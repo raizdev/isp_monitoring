@@ -61,7 +61,7 @@ services:
     image: grafana/grafana:10.3.1
     container_name: kpn_grafana
     volumes:
-      - grafana_data:/var/lib/grafanahttps://github.com/raizdev/isp_monitoring/blob/main/docker-compose.yml
+      - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
     environment:
